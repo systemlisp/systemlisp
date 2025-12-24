@@ -30,7 +30,7 @@ Since SystemLisp is not yet in Quicklisp, install manually:
 $ cd $HOME/quicklisp/local-projects
 
 # Clone the repository
-$ git clone https://github.com/system-lisp/system-lisp.git
+$ git clone https://github.com/systemlisp/systemlisp.git
 
 # Open the Common Lisp REPL either in the shell or inside Emacs using Sly or SLIME
 $ sbcl
