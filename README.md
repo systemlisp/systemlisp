@@ -19,9 +19,10 @@ SystemLisp is an experimental HDL (Hardware Description Language) simulator writ
 - **Common Lisp Implementation**: SBCL (recommended) or ECL
 - **Quicklisp**: This is the package manager for Common Lisp, see installation instructions [here](https://www.quicklisp.org/beta/#installation)
 - **Emacs+Sly/SLIME**: To have a Common Lisp IDE make sure you have Emacs with the Sly (recommended) or the SLIME plugins installed
-  - **Portacle**: Alternatively, if you want to avoid doing all the Emacs setup yourself you can install the [Portacle](https://portacle.github.io/) bundle which includes Emacs, SBCL, SLIME and a few other useful plugins for Common Lisp development
+  - **Portacle (optional)**: Alternatively, if you want to avoid doing all the Emacs setup yourself you can install the [Portacle](https://portacle.github.io/) bundle which includes Emacs, SBCL, SLIME and a few other useful plugins for Common Lisp development
 - **SQLite3**: SystemLisp stores waveform data in SQLite database files
 - **rlwrap (optional)**: A command-line utility that adds powerful GNU Readline features, like command history, line editing, and programmable tab completion, to any program that reads from standard input but doesn't support readline natively
+- **GTKWave (optional)**: A free and open-source waveform viewer
 
 ### Installation
 
@@ -70,9 +71,15 @@ $ sbcl
 * (rand-num-gen-run-sim)
 * (run-spi-test-1master-1slave-sim)
 * (swap-tb-run-sim)
+
+# Exit sbcl
+* (uiop:quit)
+
+# Open the waveform file
+$ gtkwave waves.vcd
 ```
 
-Notice that after running an example a waves.vcd file is dumped which can be opened in GtkWave or some other waveform viewer to view signal waveforms. There also some sqlite3 database files generated. These also contain waveform data in a SystemLisp-specific format. SystemLisp generates the vcd waveform files from these sqlite3 database. Once the vcd file has been generated you can delete the sqlite3 database since it's not needed anymore.
+Notice that after running an example a waves.vcd file is dumped which can be opened in GtkWave or some other waveform viewer to view signal waveforms. There are also some sqlite3 database files generated. These also contain waveform data in a SystemLisp-specific format. SystemLisp generates the vcd waveform files from these sqlite3 database files. Once the vcd file has been generated you can delete the sqlite3 database since it's not needed anymore.
 
 More examples will be added in the future.
 
