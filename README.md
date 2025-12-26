@@ -20,6 +20,8 @@ SystemLisp is an experimental HDL (Hardware Description Language) simulator writ
 - **Quicklisp**: This is the package manager for Common Lisp, see installation instructions [here](https://www.quicklisp.org/beta/#installation)
 - **Emacs+Sly/SLIME**: To have a Common Lisp IDE make sure you have Emacs with the Sly (recommended) or the SLIME plugins installed
   - **Portacle**: Alternatively, if you want to avoid doing all the Emacs setup yourself you can install the [Portacle](https://portacle.github.io/) bundle which includes Emacs, SBCL, SLIME and a few other useful plugins for Common Lisp development
+- **SQLite3**: SystemLisp stores waveform data in SQLite database files
+- **rlwrap (optional)**: A command-line utility that adds powerful GNU Readline features, like command history, line editing, and programmable tab completion, to any program that reads from standard input but doesn't support readline natively
 
 ### Installation
 
@@ -34,6 +36,7 @@ $ git clone https://github.com/systemlisp/systemlisp.git
 
 # Open the Common Lisp REPL either in the shell or inside Emacs using Sly or SLIME
 $ sbcl
+# or "rlwrap sbcl"
 
 # Install the system-lisp package and its dependencies
 * (ql:quickload "system-lisp")
@@ -49,7 +52,8 @@ $ mkdir my-sim-folder
 $ cd my-sim-folder
 
 # Start the CL REPL (sbcl in the shell or Sly/SLIME in Emacs)
-sbcl
+$ sbcl
+# or "rlwrap sbcl"
 
 # Load the SystemLisp
 * (ql:quickload "system-lisp")
