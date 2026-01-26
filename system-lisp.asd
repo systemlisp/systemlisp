@@ -16,7 +16,7 @@
 			 (:file "sl-sim-event-region" :depends-on ("sl-logger"))
 			 (:file "sl-sim-event-eval" :depends-on ("sl-logger"))
 			 (:file "sl-sync-event" :depends-on ("sl-logger"))
-			 (:file "sl-sync-event-group" :depends-on ("sl-logger"))
+			 (:file "sl-sync-event-group" :depends-on ("sl-logger" "sl-sync-event"))
 			 (:file "sl-signal-object" :depends-on ("sl-logger"))
 			 (:file "sl-signal-number" :depends-on ("sl-logger" "sl-sync-event"))
 			 (:file "sl-signal-lambda" :depends-on ("sl-logger"))

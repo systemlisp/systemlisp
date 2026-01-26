@@ -115,7 +115,7 @@
     ((and (listp delay-val) (= 2 (length delay-val)) (numberp (first delay-val)) (symbolp (second delay-val)))
      `(progn
 	(setf (status *process-self*) 'waiting)
-	(yield (make-instance 'sl-timing-control-wait-delay :delay (sl-time ,(first delay-val) ,(second delay-val))))))
+	(yield (make-instance 'sl-timing-control-wait-delay :delay (sl-time ,(first delay-val) (quote ,(second delay-val)))))))
     (t (error "Invalid delay value: ~a" delay-val))))
 
 (defmacro sim-wait (event-val)

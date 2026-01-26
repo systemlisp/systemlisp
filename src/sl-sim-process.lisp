@@ -29,12 +29,12 @@
 (defmethod resume-process ((proc sl-sim-process))
   (setf (status proc) 'running))
 
-(defmethod spawn ((proc function) &rest args)
+(defmethod spawn ((fproc function) &rest args)
   "Spawns a process"
   (let ((current-time-slot
 	  (get-current-time-slot))
 	(eval-event (make-instance 'sl-sim-event-eval
-				   :proc (make-instance 'sl-sim-process :func (apply proc args) :status 'running))))
+				   :proc (make-instance 'sl-sim-process :func (apply fproc args) :status 'running))))
     (when *process-self*
       (vector-push-extend (proc eval-event) (forked-procs *process-self*)))
     (push-event eval-event (active-region current-time-slot))
