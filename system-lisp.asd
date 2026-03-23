@@ -44,7 +44,7 @@
 					     (find-symbol* :sl-main-test :system-lisp-test))))
 
 (defsystem "system-lisp/examples"
-  :depends-on ("system-lisp")
+  :depends-on ("system-lisp" "fiveam")
   :serial t
   :components ((:module "examples/package" :components
 			((:file "package")))
@@ -65,5 +65,14 @@
 	       (:module "examples/swap-nb" :components
 			((:file "swap-nb")))
 	       (:module "examples/flip-flops" :components
-			((:file "d-flip-flop")))))
+			((:file "d-flip-flop")))
+	       (:module "examples/risc-v" :components
+			(
+			 (:file "femtorv32")
+			 (:file "femtorv32-tb" :depends-on ("femtorv32"))
+			 (:file "rv32i-asm")
+			 (:file "rv32i-asm-test")
+			 (:file "dram-beh")
+			 (:file "femtorv32-dram-tb" :depends-on ("dram-beh" "femtorv32" "rv32i-asm"))
+			 (:file "femtorv32-prog-test" :depends-on ("femtorv32-dram-tb" "dram-beh" "femtorv32" "rv32i-asm"))))))
 
