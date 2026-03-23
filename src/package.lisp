@@ -94,9 +94,12 @@
    :setnb
    :sl-lognot
    :sl-logxor
+   :sl-logior
+   :sl-logand
    :sl1+
    :sl1-
    :sl=
+   :sl/=
    :sl>
    :sl<
    :sl>=
@@ -138,6 +141,39 @@
    :sim-db
    :vcd-db-handle-to-file
    :sl-dump-waves
-   :continue-loop))
+   :continue-loop
+   :int-repeat-bit
+   :uint-repeat-bit
+   :repeat-bit-int
+   :repeat-bit-uint
+   :and-reduce
+   :or-reduce
+   :xor-reduce
+   :sl+
+   :sl-
+   :sl*
+   :sl/
+   :sl-mod
+   :sl-rem
+   :sl-expt
+   :slice
+   :signal-concat
+   :vcd-db-to-file
+   :sl-memory
+   :make-memory
+   :sl-memory-write
+   :sl-memory-burst-write
+   :sl-memory-read
+   :sl-memory-read-uint
+   :sl-memory-read-int
+   :sl-memory-burst-read
+   :sl-memory-burst-read-uint
+   :sl-memory-burst-read-int
+   :sl-memory-write-to-file
+   :sl-memory-read-form-file
+   :uint-cast
+   :int-cast
+   :group
+   :sim-tops))
 
 (setq *read-default-float-format* 'double-float)

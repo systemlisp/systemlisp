@@ -34,15 +34,15 @@
 
 (defmethod sl-memory-write ((self sl-memory) (addr integer) (data integer))
   (assert (< addr (1- (word-count self))) (addr) "sl-memory-write: addres ~X exceeds memory word count of ~a" addr (addr-bits self))
-  (setf (gethash addr self) (logand data (1- (ash 1 (data-bits self))))))
+  (setf (gethash addr (-> self memory)) (logand data (1- (ash 1 (data-bits self))))))
 
 (defmethod sl-memory-write ((self sl-memory) (addr integer) (data sl-uint))
   (assert (< addr (1- (word-count self))) (addr) "sl-memory-write: addres ~X exceeds memory word count of ~a" addr (addr-bits self))
-  (setf (gethash addr self) (sl-uint-value data)))
+  (setf (gethash addr (-> self memory)) (sl-uint-value data)))
 
 (defmethod sl-memory-write ((self sl-memory) (addr integer) (data sl-int))
   (assert (< addr (1- (word-count self))) (addr) "sl-memory-write: addres ~X exceeds memory word count of ~a" addr (addr-bits self))
-  (setf (gethash addr self) (sl-int-value data)))
+  (setf (gethash addr (-> self memory)) (sl-int-value data)))
 
 (defmethod sl-memory-burst-write ((self sl-memory) (addr integer) (data vector))
   (let ((write-addr addr))
@@ -82,17 +82,17 @@
 
 (defmethod sl-memory-read ((self sl-memory) (addr integer))
   (assert (<= addr (1- (word-count self))) (addr) "sl-memory-write: addres ~X exceeds memory word count of ~a" addr (addr-bits self))
-  (let ((val (gethash addr self)))
+  (let ((val (gethash addr (-> self memory))))
     (if (null val) 0 val)))
 
 (defmethod sl-memory-read-uint ((self sl-memory) (addr integer))
   (assert (<= addr (1- (word-count self))) (addr) "sl-memory-write: addres ~X exceeds memory word count of ~a" addr (addr-bits self))
-  (let ((val (gethash addr self)))
+  (let ((val (gethash addr (-> self memory))))
     (if (null val) 0 (uint val :bits (data-bits self)))))
 
 (defmethod sl-memory-read-int ((self sl-memory) (addr integer))
   (assert (<= addr (1- (word-count self))) (addr) "sl-memory-write: addres ~X exceeds memory word count of ~a" addr (addr-bits self))
-  (let ((val (gethash addr self)))
+  (let ((val (gethash addr (-> self memory))))
     (if (null val) 0 (uint val :bits (data-bits self)))))
 
 (defmethod sl-memory-burst-read ((self sl-memory) (addr integer) (count integer))

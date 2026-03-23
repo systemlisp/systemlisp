@@ -12,7 +12,7 @@
    (vcd-db-id :accessor vcd-db-id :initform nil)
    (loads :accessor loads :initform (make-array 10 :adjustable t :fill-pointer 0))
    (equal-predicate :initarg :equal-predicate :accessor equal-predicate :initform #'equalp)
-   (dir :accessor dir :initform nil)))
+   (dir :accessor dir :initarg :dir :initform nil)))
 
 (defmethod propagate ((sig sl-signal-object))
   (loop for l across (loads sig) do

@@ -41,6 +41,8 @@
 
 (defmethod setb ((obj sl-signal-bit-proxy) (val integer))
   (let ((new-val (if (has-lambda obj) (funcall (expr obj)) val)))
+    (when (typep new-val 'sl-uint) (setf new-val (sl-uint-value new-val)))
+    (when (typep new-val 'sl-int) (setf new-val (sl-int-value new-val)))
     (if (-> obj sig-ref signed)
 	(progn
 	  (setb (-> obj sig-ref) (int-bit-set (bit-index obj)
@@ -53,8 +55,16 @@
 					       (-> obj sig-ref value sl-uint-bits)
 					       (not (zerop new-val))))))))
 
+(defmethod setb ((obj sl-signal-bit-proxy) (val sl-uint))
+  (setb obj (sl-uint-value val)))
+
+(defmethod setb ((obj sl-signal-bit-proxy) (val sl-int))
+  (setb obj (sl-int-value val)))
+
 (defmethod setb ((obj sl-signal-slice-proxy) (val integer))
   (let ((new-val (if (has-lambda obj) (funcall (expr obj)) val)))
+    (when (typep new-val 'sl-uint) (setf new-val (sl-uint-value new-val)))
+    (when (typep new-val 'sl-int) (setf new-val (sl-int-value new-val)))
     (if (-> obj sig-ref signed)
 	(setb (-> obj sig-ref) (int-set-slice (msb-index obj)
 					      (lsb-index obj)
@@ -67,8 +77,16 @@
 					       (-> obj sig-ref value sl-uint-value)
 					       (-> obj sig-ref value sl-uint-bits))))))
 
+(defmethod setb ((obj sl-signal-slice-proxy) (val sl-uint))
+  (setb obj (sl-uint-value val)))
+
+(defmethod setb ((obj sl-signal-slice-proxy) (val sl-int))
+  (setb obj (sl-int-value val)))
+
 (defmethod setb ((obj sl-signal-concat-proxy) (val integer))
   (let ((new-val (if (has-lambda obj) (funcall (expr obj)) val)))
+    (when (typep new-val 'sl-uint) (setf new-val (sl-uint-value new-val)))
+    (when (typep new-val 'sl-int) (setf new-val (sl-int-value new-val)))
     (let ((crt-lsb 0))
       (loop for sig across (-> obj sig-refs) do
 	(setb sig (uint-get-slice (+ crt-lsb (-> sig bit-width) -1)
@@ -76,15 +94,23 @@
 				  (-> sig bit-width)))
 	(incf crt-lsb (-> sig bit-width))))))
 
-(defmethod connect-comb ((sig sl-signal-bit-proxy) (expr function) (sense-sig sl-signal-binary))
-  (setf (has-lambda sig) t)
-  (setf (expr sig) expr)
-  (connect-driver-load sense-sig sig))
+(defmethod setb ((obj sl-signal-concat-proxy) (val sl-uint))
+  (setb obj (sl-uint-value val)))
 
-(defmethod connect-comb ((sig sl-signal-slice-proxy) (expr function) (sense-sig sl-signal-binary))
+(defmethod setb ((obj sl-signal-concat-proxy) (val sl-int))
+  (setb obj (sl-int-value val)))
+
+(defmethod connect-comb ((sig sl-signal-bit-proxy) (expr function) (sense-list vector))
   (setf (has-lambda sig) t)
   (setf (expr sig) expr)
-  (connect-driver-load sense-sig sig))
+  (loop for sense across sense-list do
+    (connect-driver-load sense sig)))
+
+(defmethod connect-comb ((sig sl-signal-slice-proxy) (expr function) (sense-list vector))
+  (setf (has-lambda sig) t)
+  (setf (expr sig) expr)
+  (loop for sense across sense-list do
+    (connect-driver-load sense sig)))
 
 (defmethod connect-comb ((sig sl-signal-concat-proxy) (expr function) (sense-list vector))
   (setf (has-lambda sig) t)

@@ -694,7 +694,7 @@
 
 (defmethod lsh ((obj sl-int) (count number))
   (make-sl-int (sl-int-bits obj)
-		(int-lsh count (sl-int-value obj) (sl-int-bits obj))))
+	       (int-lsh count (sl-int-value obj) (sl-int-bits obj))))
 
 ;;; bit-rotr
 (declaim (inline uint-rotr))
@@ -818,6 +818,33 @@
     (multiple-value-bind (value bits) (int-concat  opnd1 opnd1-length
 						   opnd2 opnd2-length)
     (make-sl-uint bits value))))
+
+;;; Repeat bits
+(declaim (inline uint-repeat-bit))
+(defun uint-repeat-bit (bit n)
+  (if (zerop bit)
+      0
+      ;; else
+      (to-uint (1- (ash 1 n)) n)))
+
+(declaim (inline int-repeat-bit))
+(defun int-repeat-bit (bit n)
+  (if (zerop bit)
+      0
+      ;; else
+      (to-int (1- (ash 1 n)) n)))
+
+(defmethod repeat-bit-int ((bit integer) (n integer))
+  (int (int-repeat-bit bit n) :bits n))
+
+(defmethod repeat-bit-int ((bit sl-int) (n integer))
+  (int (int-repeat-bit (bit bit 0) n) :bits n))
+
+(defmethod repeat-bit-uint ((bit integer) (n integer))
+  (uint (uint-repeat-bit bit n) :bits n))
+
+(defmethod repeat-bit-uint ((bit sl-uint) (n integer))
+  (uint (uint-repeat-bit (bit bit 0) n) :bits n))
 
 ;;; + - * / rem mod div pow/** > < >= <= == != floor ceiling
 ;;; Operator overloading macros
@@ -1288,6 +1315,8 @@
 
 ;;; Equality =
 (gen-comp-op = cl:=)
+
+(gen-comp-op /= cl:/=)
 
 (gen-comp-op > cl:>)
 
