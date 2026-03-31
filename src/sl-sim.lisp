@@ -31,6 +31,9 @@
 ;; The simulator instance
 (defparameter *sim* (make-instance 'sl-sim))
 
+;; Counter for processes evaluated in the current time slot
+(defparameter *eval-count* 0)
+
 (defun get-current-time-slot ()
   (gethash (time-now *sim*) (time-slots *sim*)))
 
@@ -63,18 +66,21 @@
 
 (defmethod run ((time-limit integer))
   (loop while (and (not (= (hash-table-count (time-slots *sim*)) 0)) (eq (sim-state *sim*) 'sim-running)) do
-    (progn
-      ; Update time
-      (setf (time-now *sim*) (containers:first-element (time-slot-times *sim*)))
-      ; If time limit exceeded stop simulation
-      (when (> (time-now *sim*) time-limit)
-	(progn (setf (time-now *sim*) time-limit)
-	       (loop-finish)))
-      ; Execute current time slot
+    (let* ((prev-time-now (time-now *sim*))
+	   (slot-time (containers:first-element (time-slot-times *sim*))))
+      ;; If time limit exceeded stop simulation
+      (when (> slot-time time-limit)
+	(loop-finish))
+      ;; Advance time and execute current time slot
+      (setf (time-now *sim*) slot-time)
+      (setf *eval-count* 0)
       (execute (get-current-time-slot))
-      ; Delete executed time slot and its time value
+      ;; Revert time if zombie time slot (no processes were evaluated)
+      (when (zerop *eval-count*)
+	(setf (time-now *sim*) prev-time-now))
+      ;; Delete executed time slot and its time value
       (containers:delete-first (time-slot-times *sim*))
-      (remhash (time-now *sim*) (time-slots *sim*))))
+      (remhash slot-time (time-slots *sim*))))
   (vcd-db-handle-to-file (sim-db *sim*) "waves.vcd" (get-timeprecision-string) (time-now *sim*)))
 
 (defun reset-sim ()

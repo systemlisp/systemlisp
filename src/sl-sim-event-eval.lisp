@@ -7,6 +7,7 @@
 (defmethod evaluate ((event sl-sim-event-eval))
   (case  (status (proc event))
     ((running waiting)
+     (incf *eval-count*)
      (let ((result (continue-process (proc event))))
        (if (not (subtypep (type-of result) 'abstract-timing-control))
 	   (progn
