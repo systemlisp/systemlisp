@@ -72,8 +72,8 @@
 ;;; Blocking assignment - assign signal to signal
 (defmethod setb ((sig sl-signal-binary) (val sl-signal-binary))
   (let ((new-val (if (signed sig)
-		     (to-int (value val) (bit-width sig))
-		     (to-uint (value val) (bit-width sig)))))
+		     (int (sl-int-value (value val)) :bits (bit-width sig))
+		     (uint (sl-uint-value (value val)) :bits (bit-width sig)))))
     (cond ((funcall (gt-predicate sig) new-val (value sig)) (progn (emit-event (posedge sig))
 								   (emit-event (edge sig))))
 	  ((funcall (lt-predicate sig) new-val (value sig)) (progn (emit-event (negedge sig))
