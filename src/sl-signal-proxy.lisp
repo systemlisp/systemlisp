@@ -33,10 +33,12 @@
 
 (defun signal-concat (&rest sigs)
   (let ((result (make-instance 'sl-signal-concat-proxy :sig-refs (make-array 0 :adjustable t :fill-pointer 0))))
+    (setf (bit-width result) 0)
     (loop for sig in sigs do
-	  (if (typep sig 'sl-signal-binary)
-	      (vector-push-extend sig (sig-refs result))
-	      (error "~a is not of type sl-signal-binary" sig)))
+      (if (typep sig 'sl-signal-binary)
+	  (progn (vector-push-extend sig (sig-refs result))
+		 (incf (bit-width result) (bit-width sig)))
+	  (error "~a is not of type sl-signal-binary" sig)))
     result))
 
 (defmethod setb ((obj sl-signal-bit-proxy) (val integer))
@@ -91,7 +93,7 @@
       (loop for sig across (-> obj sig-refs) do
 	(setb sig (uint-get-slice (+ crt-lsb (-> sig bit-width) -1)
 				  crt-lsb new-val
-				  (-> sig bit-width)))
+				  (-> obj bit-width)))
 	(incf crt-lsb (-> sig bit-width))))))
 
 (defmethod setb ((obj sl-signal-concat-proxy) (val sl-uint))
