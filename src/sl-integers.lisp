@@ -1309,7 +1309,7 @@
 	 (,comp-op-cl (to-int (sl-int-value a) (sl-int-bits a)) b))
 
        (defmethod ,binop ((a number) (b sl-int))
-	 (,comp-op-cl a (to-uint (sl-int-value b) (sl-int-bits b)))))))
+	 (,comp-op-cl a (to-int (sl-int-value b) (sl-int-bits b)))))))
 
 ;;; TODO: generate optimized comparison operators
 
