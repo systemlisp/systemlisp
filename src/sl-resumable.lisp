@@ -323,6 +323,25 @@
 	       (uiop:appendf (resumable-tagbody m-env) (list whatever-is-next-tag))
 	       t)) ;; got match
 
+	    ;; cond statement
+	    ((list* 'cond clauses)
+	     (let* ((whatever-is-next-tag (get-new-tag m-env))
+		    (clause-tags (loop for clause in clauses collect (get-new-tag m-env)))
+		    (dispatch-clauses (loop for clause in clauses
+					    for clause-tag in clause-tags
+					    collect `(,(car clause) (go ,clause-tag)))))
+	       (uiop:appendf (resumable-tagbody m-env)
+			     (list `(cond ,@dispatch-clauses
+					  (t (go ,whatever-is-next-tag)))))
+	       (loop for clause in clauses
+		     for clause-tag in clause-tags do
+		       (uiop:appendf (resumable-tagbody m-env) (list clause-tag))
+		       (translate-resumable-body m-env (cdr clause) :env-var-name env-var-name)
+		       (uiop:appendf (resumable-tagbody m-env)
+				     (list `(go ,whatever-is-next-tag))))
+	       (uiop:appendf (resumable-tagbody m-env) (list whatever-is-next-tag))
+	       t)) ;; got match
+
 	    ;; unless statement
 	    ((list* 'unless cond-expr then-clause)
 	     (let ((then-clause-tag (get-new-tag m-env))

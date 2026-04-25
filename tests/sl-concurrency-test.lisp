@@ -272,3 +272,47 @@
     (spawn #'proc-consuming-value)
     (sl:run 50)
     (is (= 10 (time-now *sim*)))))
+
+;; Test cond statement in a resumable
+(defun-res proc-cond (x)
+  (sim-delay 5)
+  (cond
+    ((= x 1)
+     (sim-delay 10)
+     (save-message 'cond-branch 'one))
+    ((= x 2)
+     (sim-delay 20)
+     (save-message 'cond-branch 'two))
+    (t
+     (sim-delay 30)
+     (save-message 'cond-branch 'other)))
+  (save-timestamp 'after-cond (time-now *sim*)))
+
+(test test-cond
+  "Test cond statement inside a resumable, including yields in clause bodies"
+  (let ((*sim* (make-instance 'sl-sim)))
+    (reset-sim)
+    (spawn #'proc-cond 2)
+    (sl:run 100)
+    (is (= 25 (time-now *sim*)))
+    (is (eq 'two (gethash 'cond-branch *debug-messages*)))
+    (is (= 25 (gethash 'after-cond *debug-timestamps*)))
+    (clear-debug))
+
+  (let ((*sim* (make-instance 'sl-sim)))
+    (reset-sim)
+    (spawn #'proc-cond 1)
+    (sl:run 100)
+    (is (= 15 (time-now *sim*)))
+    (is (eq 'one (gethash 'cond-branch *debug-messages*)))
+    (is (= 15 (gethash 'after-cond *debug-timestamps*)))
+    (clear-debug))
+
+  (let ((*sim* (make-instance 'sl-sim)))
+    (reset-sim)
+    (spawn #'proc-cond 99)
+    (sl:run 100)
+    (is (= 35 (time-now *sim*)))
+    (is (eq 'other (gethash 'cond-branch *debug-messages*)))
+    (is (= 35 (gethash 'after-cond *debug-timestamps*)))
+    (clear-debug)))
