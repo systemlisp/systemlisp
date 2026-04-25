@@ -174,6 +174,11 @@
    :uint-cast
    :int-cast
    :group
-   :sim-tops))
+   :sim-tops
+   :*timeunit*
+   :*timeprecision*
+   :sl-time
+   :sl-tp
+   :sl-tu))
 
 (setq *read-default-float-format* 'double-float)
