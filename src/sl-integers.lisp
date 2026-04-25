@@ -323,7 +323,7 @@
 (defmethod bits ((obj sl-int) (hi number) (lo number))
   (multiple-value-bind (value length)
       (int-get-slice hi lo (sl-int-value obj) (sl-int-bits obj))
-      (make-sl-int length value)))
+      (uint-cast value :bits length)))
 
 (defmethod group ((obj sl-uint) (size number) (index number))
   (let* ((hi (cl:1- (cl:* size (1+ index))))
