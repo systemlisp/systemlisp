@@ -38,6 +38,16 @@
 	 (>= (length slot-initform) 2)
 	 (eq (second (second slot-initform)) 'sl-component))))
 
+(defun is-signal-vector-value (val)
+  "True if val is a non-empty vector whose elements are all signal instances."
+  (and (vectorp val)
+       (not (stringp val))
+       (> (length val) 0)
+       (every (lambda (el)
+		(or (typep el 'sl-signal-binary)
+		    (typep el 'sl-signal-number)))
+	      val)))
+
 (defun get-signals (obj)
   (loop for slot in (c2mop:class-slots (class-of obj))
 	when (is-signal-slot slot)
@@ -108,6 +118,12 @@
       (cond
 	((is-signal-slot slot)
 	 (vcd-db-add-signal db slot-value slot-name (comp-db-id comp)))
+	((is-signal-vector-value slot-value)
+	 (loop for sig across slot-value
+	       for i from 0
+	       do (vcd-db-add-signal db sig
+				     (format nil "~a[~a]" (string slot-name) i)
+				     (comp-db-id comp))))
 	((and (not (eql slot-name 'parent)) (typep slot-value 'sl-component))
 	 (vcd-db-add-component db slot-value (comp-db-id comp) :comp-name slot-name))))))
 
